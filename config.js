@@ -1,5 +1,9 @@
 function makeHeatMap(json) {
-console.log("this worked");
+let box = document.querySelector('svg');
+let w = box.clientWidth;
+let h = box.clientHeight;
+console.log("this is width " + w);
+console.log("this is height" + h);
 console.log(json);
 };
 

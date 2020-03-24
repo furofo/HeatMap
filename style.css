@@ -4,3 +4,15 @@
     text-align: center;
     margin-top: 3em;
 }
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+svg{
+    width: 80%;
+    height: 600px;
+}
