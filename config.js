@@ -34,6 +34,8 @@ function fillColorSetter(rectTemp) {
     }
 }
 
+// look into d3. interpolate
+
 function makeHeatMap(json) {
 let box = document.querySelector('svg');
 let w = box.clientWidth;
@@ -75,13 +77,19 @@ const xAxis = d3.axisBottom(xScale);
 const yAxis =d3.axisLeft(yScale); 
 
 svg.append("g")
-       .attr("transform", "translate(0," + (h - 25) + ")") // make x-axis
-       .attr("id", "x-axis")
-       .call(xAxis);   
-    svg.append("g")
-      .attr("transform", "translate(40," + 0 + ")") // make y -axis
-      .attr("id", "y-axis")
-      .call(yAxis);
+    .attr("transform", "translate(0," + (h - 25) + ")") // make x-axis
+    .attr("id", "x-axis")
+    .call(xAxis);   
+svg.append("g")
+    .attr("transform", "translate(40," + 0 + ")") // make y -axis
+    .attr("id", "y-axis")
+    .call(yAxis);
+
+let legend = svg.append("g").attr("id", "legend")
+    .attr("height", 100)
+    .attr("width", width / 7)  // thi holds key to interpet colors for scatterplot
+    .attr('transform', 'translate(' + (width - 100) + ',200)')
+    .attr("id", "legend");
 
 };
 
