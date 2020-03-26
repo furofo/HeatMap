@@ -2,6 +2,8 @@ function makeHeatMap(json) {
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
+let colors = ["blue", "green", "orange"];
+
 console.log(json);
 let months = [1,2,3,4,5,6,7,8,9,10,11,12];
 let finMonths = months.map(x => monthsConveter(x));
@@ -14,6 +16,9 @@ var yScale = d3.scaleBand()
 const svg = d3.select("svg");
 const g = svg.append('g');
 
+var colorScale = d3.scaleOrdinal()
+                    .domain(months)
+                    .range(colors);
 g.selectAll('rect')
   .data(months)
   .enter()
@@ -28,7 +33,7 @@ g.selectAll('rect')
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
-  .attr("fill", "green");
+  .attr("fill", (d) => colorScale(d));
 
 const xAxis = d3.axisBottom(xScale);
 const yAxis =d3.axisLeft(yScale); 
