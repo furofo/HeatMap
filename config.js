@@ -51,12 +51,17 @@ var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars 
 var yScale = d3.scaleBand()
 .domain(months)
 .range([0, h]);
+
+var colorScale = d3.scaleLinear()
+                    .domain(months)
+                    .interpolate(d3.interpolateHcl)
+                    .range(["#0066AE", "#8B0000"])
 const svg = d3.select("svg");
 const g = svg.append('g');
 
-var colorScale = d3.scaleOrdinal()
-                    .domain(months)
-                    .range(colors);
+//var colorScale = d3.scaleOrdinal()
+                   // .domain(months)
+                  //  .range(colors);
 g.selectAll('rect')
   .data(months)
   .enter()
