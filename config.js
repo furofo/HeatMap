@@ -53,9 +53,11 @@ var yScale = d3.scaleBand()
 .range([0, h]);
 
 var colorScale = d3.scaleLinear()
-                    .domain(months)
-                    .interpolate(d3.interpolateHcl)
+                    .domain([1, 12])
+                    
                     .range(["#0066AE", "#8B0000"])
+
+console.log("this is color scale " + colorScale(3));
 const svg = d3.select("svg");
 const g = svg.append('g');
 
