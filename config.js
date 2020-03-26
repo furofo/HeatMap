@@ -29,6 +29,19 @@ g.selectAll('rect')
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
   .attr("fill", "green");
+
+const xAxis = d3.axisBottom(xScale);
+const yAxis =d3.axisLeft(yScale); 
+
+svg.append("g")
+       .attr("transform", "translate(0," + (h - 25) + ")") // make x-axis
+       .attr("id", "x-axis")
+       .call(xAxis);   
+    svg.append("g")
+      .attr("transform", "translate(40," + 0 + ")") // make y -axis
+      .attr("id", "y-axis")
+      .call(yAxis);
+
 };
 
 function monthsConveter(month) {
