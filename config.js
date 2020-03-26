@@ -1,8 +1,44 @@
+function fillColorSetter(rectTemp) {
+    if(rectTemp > 12.8) {
+      return "#313695";
+    }
+    else if (rectTemp > 11.7) {
+      return "#D73027";
+    }
+    else if (rectTemp > 10.6) {
+      return "#F46D43";
+    }
+    else if (rectTemp > 9.5) {
+      return "#FDAE61";
+    }
+    else if (rectTemp > 8.3) {
+      return "#FEE090";
+    }
+    else if (rectTemp > 7.2) {
+      return "#FFFFBF";
+    }
+    else if (rectTemp > 6.1) {
+      return "#E0F3F8";
+    }
+    else if (rectTemp > 5.0) {
+      return "#ABD9E9";
+    }
+    else if (rectTemp > 3.9) {
+      return "#74ADD1";
+    }
+    else if (rectTemp > 2.8) {
+      return "#4575B4";
+    }
+    else {
+      return "#313695";
+    }
+}
+
 function makeHeatMap(json) {
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
-let colors = ["blue", "green", "orange"];
+let colors = ["#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026"];
 
 console.log(json);
 let months = [1,2,3,4,5,6,7,8,9,10,11,12];
