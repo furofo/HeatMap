@@ -41,23 +41,25 @@ let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
 let colors = ["#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026"];
-
-console.log(json);
+let years = [];
+let months1 = [];
+for (let i = 0; i < json.monthlyVariance.length; i++) {
+years.push(json.monthlyVariance[i].year);          // collect years and months for scale band domain
+ months1.push(json.monthlyVariance[i].month);
+}
 let months = [1,2,3,4,5,6,7,8,9,10,11,12];
 let finMonths = months.map(x => monthsConveter(x));
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
-.domain(months) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
+.domain(years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
 .range([0, w]);
 var yScale = d3.scaleBand()
-.domain(months)
+.domain(months1)
 .range([0, h]);
-
 var colorScale = d3.scaleLinear()
                     .domain([1, 12])
                     
                     .range(["#0066AE", "#8B0000"])
 
-console.log("this is color scale " + colorScale(3));
 const svg = d3.select("svg");
 const g = svg.append('g');
 
@@ -65,22 +67,27 @@ const g = svg.append('g');
                    // .domain(months)
                   //  .range(colors);
 g.selectAll('rect')
-  .data(months)
+  .data(json.monthlyVariance)
   .enter()
   .append("rect")
   .attr("x", (d,i) => {
-    console.log("this is xscalebad" + xScale(d));
-    return "0";
+    return xScale(years[i]);
   })
   .attr("y", (d, i) => {
-    console.log("this is Y Scale Band " + yScale(d))
-    return yScale(d);
+    console.log("this is y scale d" + d + " this is x scale i " + i);
+    console.log("this is xyscale of years[i] " + yScale(years[i]))
+    return yScale(months1[i]);
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
-  .attr("fill", (d) => colorScale(d));
 
-const xAxis = d3.axisBottom(xScale);
+  .attr("fill", (d, i) => colorScale(months1[i]));
+
+const xAxis = d3.axisBottom(xScale)
+                .tickValues(xScale.domain().filter(function(d,i){  
+  // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
+                         return !(i%12)                                   
+                                        }));
 const yAxis =d3.axisLeft(yScale); 
 
 svg.append("g")
@@ -92,11 +99,11 @@ svg.append("g")
     .attr("id", "y-axis")
     .call(yAxis);
 
-let legend = svg.append("g").attr("id", "legend")
-    .attr("height", 100)
-    .attr("width", width / 7)  // thi holds key to interpet colors for scatterplot
-    .attr('transform', 'translate(' + (width - 100) + ',200)')
-    .attr("id", "legend");
+//let legend = svg.append("g").attr("id", "legend")
+    //.attr("height", 100)
+   // .attr("width", width / 7)  // thi holds key to interpet colors for scatterplot
+   // .attr('transform', 'translate(' + (width - 100) + ',200)')
+    //.attr("id", "legend");
 
 };
 
