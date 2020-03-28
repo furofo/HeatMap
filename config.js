@@ -49,13 +49,17 @@ years.push(json.monthlyVariance[i].year);          // collect years and months f
  months1.push(json.monthlyVariance[i].month);
 }
 let months = [1,2,3,4,5,6,7,8,9,10,11,12];
-let finMonths = months.map(x => monthsConveter(x));
+let monthsConverted = months1.map((x => monthsConverter(x)));
+
+
+let finMonths = months.map(x => monthsConverter(x));
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
 .domain(years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
 .range([margin.left, w - margin.right]);
 var yScale = d3.scaleBand()
-.domain(months1)
+.domain(monthsConverted)
 .range([margin.top, h - margin.bottom]);
+console.log(yScale('January') + "this is yscale");
 var colorScale = d3.scaleLinear()
                     .domain([1, 12])
                     
@@ -75,9 +79,7 @@ g.selectAll('rect')
     return xScale(years[i]);
   })
   .attr("y", (d, i) => {
-    console.log("this is y scale d" + d + " this is x scale i " + i);
-    console.log("this is xyscale of years[i] " + yScale(years[i]))
-    return yScale(months1[i]);
+    return yScale(monthsConverted[i]);
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
@@ -87,7 +89,12 @@ g.selectAll('rect')
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
-                         return !(i%24)                                   
+                    console.log("these are tick values" + d);
+                    if(d % 10 == 0) {
+                      console.log("this is succes??? " + d);
+                      return d;
+                    }
+                                                           
                                         }));
 const yAxis =d3.axisLeft(yScale); 
 
@@ -108,7 +115,7 @@ svg.append("g")
 
 };
 
-function monthsConveter(month) {
+function monthsConverter(month) {
   
   switch(month) {
     case 1:
