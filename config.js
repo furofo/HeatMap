@@ -43,6 +43,7 @@ let h = box.clientHeight;
 let colors = ["#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026"];
 let years = [];
 let months1 = [];
+let margin = {top: 100, left: 70, right: 70, bottom: 30};
 for (let i = 0; i < json.monthlyVariance.length; i++) {
 years.push(json.monthlyVariance[i].year);          // collect years and months for scale band domain
  months1.push(json.monthlyVariance[i].month);
@@ -51,10 +52,10 @@ let months = [1,2,3,4,5,6,7,8,9,10,11,12];
 let finMonths = months.map(x => monthsConveter(x));
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
 .domain(years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
-.range([0, w]);
+.range([margin.left, w - margin.right]);
 var yScale = d3.scaleBand()
 .domain(months1)
-.range([0, h]);
+.range([margin.top, h - margin.bottom]);
 var colorScale = d3.scaleLinear()
                     .domain([1, 12])
                     
@@ -86,16 +87,16 @@ g.selectAll('rect')
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
-                         return !(i%12)                                   
+                         return !(i%24)                                   
                                         }));
 const yAxis =d3.axisLeft(yScale); 
 
 svg.append("g")
-    .attr("transform", "translate(0," + (h - 25) + ")") // make x-axis
+    .attr("transform", "translate(0," + (h - margin.bottom) + ")") // make x-axis
     .attr("id", "x-axis")
     .call(xAxis);   
 svg.append("g")
-    .attr("transform", "translate(40," + 0 + ")") // make y -axis
+    .attr("transform", "translate(" + (margin.left) + ", 0)") // make y -axis
     .attr("id", "y-axis")
     .call(yAxis);
 
