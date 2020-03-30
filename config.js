@@ -42,9 +42,16 @@ function jsonCombinedArr(json) { // returns an obj with years key associated wit
   return obj;
 }
 function makeHeatMap(json) {  //this provides logic for making graph
+  console.log(" this is d3 max" + d3.min(json.monthlyVariance, function(d) {
+    return d.variance;
+  }));
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
+let colorMax = d3.max(json.monthlyVariance, d => d.variance);
+let colorMin = d3.min(json.monthlyVariance, d => d.variance);
+console.log(colorMax);
+console.log(colorMin);
 let margin = {top: 30, left: 70, right: 70, bottom: 230}; //adopt margin convention give elements a little margin
 let combinedArr = jsonCombinedArr(json);
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
@@ -53,8 +60,8 @@ var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars 
 var yScale = d3.scaleBand()
 .domain(combinedArr.months)
 .range([margin.top, h - margin.bottom]);
-var colorScale = d3.scaleOrdinal()
-                    .domain(combinedArr.months)
+var colorScale = d3.scaleLinear()
+                    .domain([colorMin, colorMax])
                     .range(["#0066AE", "#8B0000"])
 const svg = d3.select("svg");
 const g = svg.append('g');
@@ -70,13 +77,17 @@ g.selectAll('rect')
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
-  .attr("fill", (d, i) => colorScale(combinedArr.months[i]))
+
   .attr("class", "cell")
   .attr("data-month", (d, i) =>  d.month - 1)
   .attr("data-year", (d, i) => {
-    console.log("this is d.year" + d.year);
     return d.year})
-  .attr("data-temp", (d, i) => d.variance);
+  .attr('data-temp', (d, i) => d.variance)
+  .attr("fill", function (d, i)  {
+    console.log(typeof d3.select(this).attr('data-temp'));
+    console.log("data temp" + colorScale(d3.select(this).attr('data-temp')));
+    return colorScale(d3.select(this).attr('data-temp'));
+  });
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
