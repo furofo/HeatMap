@@ -48,6 +48,20 @@ function makeHeatMap(json) {  //this provides logic for making graph
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
+const legendColors = [
+  "DarkBlue", 
+  "Blue", 
+  "DeepSkyBlue",
+  "LightBlue",
+  "LightCyan",
+  "LemonChiffon",
+  "Moccasin", 
+  "SandyBrown", 
+  "Chocolate",
+  "Brown",
+  "Maroon"
+];
+const legendColorTemps = [0,2.8,3.9,5.0,6.1,7.2,8.3,9.5,10.6,11.7,12.8];
 let colorMax = d3.max(json.monthlyVariance, d => d.variance);
 let colorMin = d3.min(json.monthlyVariance, d => d.variance);
 console.log(colorMax);
@@ -61,8 +75,10 @@ var yScale = d3.scaleBand()
 .domain(combinedArr.months)
 .range([margin.top, h - margin.bottom]);
 var colorScale = d3.scaleLinear()
-                    .domain([colorMin, colorMax])
-                    .range(["#0066AE", "#8B0000"])
+                    .domain(legendColorTemps)
+                    .range(legendColors)
+                    .interpolate(d3.interpolateHcl);
+console.log(colorScale(0.2));
 const svg = d3.select("svg");
 const g = svg.append('g');
 g.selectAll('rect')
@@ -82,11 +98,12 @@ g.selectAll('rect')
   .attr("data-month", (d, i) =>  d.month - 1)
   .attr("data-year", (d, i) => {
     return d.year})
-  .attr('data-temp', (d, i) => d.variance)
+  .attr('data-temp', (d, i) => parseFloat(d.variance))
   .attr("fill", function (d, i)  {
-    console.log(typeof d3.select(this).attr('data-temp'));
-    console.log("data temp" + colorScale(d3.select(this).attr('data-temp')));
-    return colorScale(d3.select(this).attr('data-temp'));
+   // console.log(typeof d3.select(this).attr('data-temp'));
+    //console.log("data temp" + (parseFloat(d3.select(this).attr('data-temp')) + 8.66));
+    console.log("color scale" + colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66)));
+    return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66));
   });
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
