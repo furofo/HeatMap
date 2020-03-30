@@ -29,68 +29,49 @@ function monthsConverter(month) {  // convert months from integer and return str
   }
   }
 function jsonCombinedArr(json) { // returns an arr with sub array of formate [year, month] so i can use this to calculate domain and range for width and x and y placemnt
-  let combinedArr = [];
+  let years = [];
+  let months = [];
+  let obj = {};
   for(let i = 0; i < json.monthlyVariance.length; i++) {
     let tempArr = [];
-    tempArr.push(json.monthlyVariance[i].year);
-    tempArr.push(monthsConverter(json.monthlyVariance[i].month));
-    combinedArr.push(tempArr);
+    years.push(json.monthlyVariance[i].year);
+    months.push(monthsConverter(json.monthlyVariance[i].month));
   }
-  return combinedArr;
+  obj.years = years;
+  obj.months = months;
+  console.log("this is obj .years" + obj.years);
+  return obj;
 }
-
-
-
-function makeHeatMap(json) {
+function makeHeatMap(json) {  //this provides logic for making graph
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
-let years = [];
-let months1 = [];
 let margin = {top: 100, left: 70, right: 70, bottom: 30}; //adopt margin convention.
-jsonCombinedArr(json);
-for (let i = 0; i < json.monthlyVariance.length; i++) {
-years.push(json.monthlyVariance[i].year);          // collect years and months for scale band domain
- months1.push(json.monthlyVariance[i].month);
-}
-let months = [1,2,3,4,5,6,7,8,9,10,11,12];
-let monthsConverted = months1.map((x => monthsConverter(x)));
-
-
-let finMonths = months.map(x => monthsConverter(x));
+let combinedArr = jsonCombinedArr(json);
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
-.domain(years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
+.domain(combinedArr.years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
 .range([margin.left, w - margin.right]);
 var yScale = d3.scaleBand()
-.domain(monthsConverted)
+.domain(combinedArr.months)
 .range([margin.top, h - margin.bottom]);
-console.log(yScale('January') + "this is yscale");
-var colorScale = d3.scaleLinear()
-                    .domain([1, 12])
-                    
+var colorScale = d3.scaleOrdinal()
+                    .domain(combinedArr.months)
                     .range(["#0066AE", "#8B0000"])
-
 const svg = d3.select("svg");
 const g = svg.append('g');
-
-//var colorScale = d3.scaleOrdinal()
-                   // .domain(months)
-                  //  .range(colors);
 g.selectAll('rect')
   .data(json.monthlyVariance)
   .enter()
   .append("rect")
   .attr("x", (d,i) => {
-    return xScale(years[i]);
+    return xScale(combinedArr.years[i]);
   })
   .attr("y", (d, i) => {
-    return yScale(monthsConverted[i]);
+    return yScale(combinedArr.months[i]);
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
-
-  .attr("fill", (d, i) => colorScale(months1[i]));
-
+  .attr("fill", (d, i) => colorScale(combinedArr.months[i]));
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
@@ -102,7 +83,6 @@ const xAxis = d3.axisBottom(xScale)
                                                            
                                         }));
 const yAxis =d3.axisLeft(yScale); 
-
 svg.append("g")
     .attr("transform", "translate(0," + (h - margin.bottom) + ")") // make x-axis
     .attr("id", "x-axis")
@@ -111,18 +91,12 @@ svg.append("g")
     .attr("transform", "translate(" + (margin.left) + ", 0)") // make y -axis
     .attr("id", "y-axis")
     .call(yAxis);
-
 //let legend = svg.append("g").attr("id", "legend")
     //.attr("height", 100)
    // .attr("width", width / 7)  // thi holds key to interpet colors for scatterplot
    // .attr('transform', 'translate(' + (width - 100) + ',200)')
     //.attr("id", "legend");
-
 };
-
-
-
-
 $(document).ready(function() {  
     fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json')
       .then(response => response.json())
@@ -131,5 +105,3 @@ $(document).ready(function() {
         makeHeatMap(json);
       });  
 });
-
-//adds (variance) to temperatue tool tip shows value rounded down to tenths of each
