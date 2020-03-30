@@ -45,7 +45,7 @@ function makeHeatMap(json) {  //this provides logic for making graph
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
-let margin = {top: 100, left: 70, right: 70, bottom: 30}; //adopt margin convention give elements a little margin
+let margin = {top: 30, left: 70, right: 70, bottom: 230}; //adopt margin convention give elements a little margin
 let combinedArr = jsonCombinedArr(json);
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
 .domain(combinedArr.years) // takes values 1 - 9 maps one to x coordinate 0, 9 to width which is 600
