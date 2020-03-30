@@ -1,11 +1,54 @@
+function monthsConverter(month) {  // convert months from integer and return string data 
+  switch(month) {
+    case 1:
+    return 'January';
+    case 2:
+    return 'Febuary';
+    case 3:
+    return 'March';
+    case 4:
+    return 'April';
+    case 5:
+    return 'May';
+    case 6:
+    return 'June';
+    case 7:
+    return 'July';
+    case 8:
+    return 'August';
+    case 9:
+    return 'September';
+    case 10:
+    return 'October';
+    case 11:
+    return 'November';
+    case 12:
+    return 'December';
+    default:
+    return 'Please input valid number from 1 - 12';
+  }
+  }
+function jsonCombinedArr(json) { // returns an arr with sub array of formate [year, month] so i can use this to calculate domain and range for width and x and y placemnt
+  let combinedArr = [];
+  for(let i = 0; i < json.monthlyVariance.length; i++) {
+    let tempArr = [];
+    tempArr.push(json.monthlyVariance[i].year);
+    tempArr.push(monthsConverter(json.monthlyVariance[i].month));
+    combinedArr.push(tempArr);
+  }
+  return combinedArr;
+}
+
+
+
 function makeHeatMap(json) {
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
-let colors = ["#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026"];
 let years = [];
 let months1 = [];
-let margin = {top: 100, left: 70, right: 70, bottom: 30};
+let margin = {top: 100, left: 70, right: 70, bottom: 30}; //adopt margin convention.
+jsonCombinedArr(json);
 for (let i = 0; i < json.monthlyVariance.length; i++) {
 years.push(json.monthlyVariance[i].year);          // collect years and months for scale band domain
  months1.push(json.monthlyVariance[i].month);
@@ -77,36 +120,7 @@ svg.append("g")
 
 };
 
-function monthsConverter(month) {
-  
-  switch(month) {
-    case 1:
-    return 'January';
-    case 2:
-    return 'Febuary';
-    case 3:
-    return 'March';
-    case 4:
-    return 'April';
-    case 5:
-    return 'May';
-    case 6:
-    return 'June';
-    case 7:
-    return 'July';
-    case 8:
-    return 'August';
-    case 9:
-    return 'September';
-    case 10:
-    return 'October';
-    case 11:
-    return 'November';
-    case 12:
-    return 'December';
-  }
 
-  }
 
 
 $(document).ready(function() {  
