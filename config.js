@@ -42,9 +42,6 @@ function jsonCombinedArr(json) { // returns an obj with years key associated wit
   return obj;
 }
 function makeHeatMap(json) {  //this provides logic for making graph
-  console.log(" this is d3 max" + d3.min(json.monthlyVariance, function(d) {
-    return d.variance;
-  }));
 let box = document.querySelector('svg');
 let w = box.clientWidth;
 let h = box.clientHeight;
@@ -64,8 +61,6 @@ const legendColors = [
 const legendColorTemps = [0,2.8,3.9,5.0,6.1,7.2,8.3,9.5,10.6,11.7,12.8];
 let colorMax = d3.max(json.monthlyVariance, d => d.variance);
 let colorMin = d3.min(json.monthlyVariance, d => d.variance);
-console.log(colorMax);
-console.log(colorMin);
 let margin = {top: 30, left: 70, right: 70, bottom: 230}; //adopt margin convention give elements a little margin
 let combinedArr = jsonCombinedArr(json);
 var xScale = d3.scaleBand() // this is an ordinal scal band makes width of bars equal
@@ -78,7 +73,6 @@ var colorScale = d3.scaleLinear()
                     .domain(legendColorTemps)
                     .range(legendColors)
                     .interpolate(d3.interpolateHcl);
-console.log(colorScale(0.2));
 const svg = d3.select("svg");
 const g = svg.append('g');
 g.selectAll('rect')
@@ -102,7 +96,6 @@ g.selectAll('rect')
   .attr("fill", function (d, i)  {
    // console.log(typeof d3.select(this).attr('data-temp'));
     //console.log("data temp" + (parseFloat(d3.select(this).attr('data-temp')) + 8.66));
-    console.log("color scale" + colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66)));
     return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66));
   });
 const xAxis = d3.axisBottom(xScale)
@@ -124,16 +117,35 @@ svg.append("g")
     .call(yAxis);
 let legend = svg.append("g").attr("id", "legend")
     .attr("height", 100)
-    .attr("width", 40)  // thi holds key to interpet colors for scatterplot
+    .attr("width", 400)  // thi holds key to interpet colors for scatterplot
     .attr('transform', 'translate(' + margin.left +',' + (h - 160) + ')')
     .attr("id", "legend");
-legend.append("text")
-    .attr("class", "ylabel")
-    //.attr("text-anchor", "end") // append a legend label
-    .attr("x",10)
-    .attr("y", 0)
-    .text("No Doping Allegations");
 
+let legendXscale = d3.scaleBand() 
+                  .domain(legendColorTemps) 
+                  .range([0, 400]);
+
+console.log("hello world" + legendXscale('2'));
+legend.selectAll('rect')
+      .data(legendColorTemps)
+      .enter()
+      .append('rect')
+      .attr("x", (d, i) => {
+        console.log("this is d" + d);
+        console.log("this is xscale d" + legendXscale(d));
+        return legendXscale(d);
+      })
+      .attr("y", (d, i) => {
+          return 0;
+      })
+      .attr("width", legendXscale.bandwidth())
+      .attr("fill", (d, i) => colorScale(d))
+      .attr('height', 40);
+const legendXaxis = d3.axisBottom(legendXscale);
+legend.append("g")
+    .attr("transform", "translate(0," + 40 + ")") // make x-axis
+    .attr("id", "x-axis")
+    .call(legendXaxis);
 };
 $(document).ready(function() {  
     fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json')
