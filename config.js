@@ -124,9 +124,16 @@ svg.append("g")
     .call(yAxis);
 let legend = svg.append("g").attr("id", "legend")
     .attr("height", 100)
-    .attr("width", width / 7)  // thi holds key to interpet colors for scatterplot
-    .attr('transform', 'translate(' + (width - 100) + ',200)')
+    .attr("width", 40)  // thi holds key to interpet colors for scatterplot
+    .attr('transform', 'translate(' + margin.left +',' + (h - 160) + ')')
     .attr("id", "legend");
+legend.append("text")
+    .attr("class", "ylabel")
+    //.attr("text-anchor", "end") // append a legend label
+    .attr("x",10)
+    .attr("y", 0)
+    .text("No Doping Allegations");
+
 };
 $(document).ready(function() {  
     fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json')
