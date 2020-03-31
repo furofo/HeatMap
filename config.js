@@ -136,10 +136,11 @@ const xAxis = d3.axisBottom(xScale)
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
                     if(d % 10 == 0) {
                       return d;
-                    }
-                                                           
-                                        }));
-const yAxis =d3.axisLeft(yScale); 
+                    }                                    
+                                        }))
+                .tickSizeOuter(0);
+const yAxis =d3.axisLeft(yScale)
+               .tickSizeOuter(0);; 
 svg.append("g")
     .attr("transform", "translate(0," + (h - margin.bottom) + ")") // make x-axis
     .attr("id", "x-axis")
