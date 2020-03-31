@@ -108,19 +108,23 @@ g.selectAll('rect')
     return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66));
   })
   .on("mouseover", function(d, i){
-    d3.select(this).attr( "fill", "red");
+    d3.select(this).attr( "fill", "black");
+    let trueTemp = parseFloat(d3.select(this).attr('data-temp')) + 8.66;
     tooltip                                        
            .style("left", d3.event.pageX - 50 + "px")
            .style("top", d3.event.pageY - 125 + "px")
            .style("visibility", "visible")
            .style("display", "inline-block")
-           .style("background", "#b3d5e0")
+           .style("background", "black")
+           .style("color", "white")
+           .style("opacity", "0.8")
            .style("padding-left", "10px")
            .style("padding-right", "10px")
            .style("padding-bottom", "10px")
            .style("padding-top", "10px")
            .attr("data-year", d3.select(this).attr("data-year"))
-           .html("Year: " + d3.select(this).attr("data-year") + '<br />' + "Temp: " + (parseFloat(d3.select(this).attr('data-temp')) + 8.66)); 
+           .html("Year: " + d3.select(this).attr("data-year") + '<br />' + "Temp: " + Math.round(100 * trueTemp) / 100 + "℃" +'<br />' + "Month: " + combinedArr.months[i]
+           + "<br />" + "Variance: " + Math.round( 100 * (parseFloat(d3.select(this).attr('data-temp')))) / 100); 
              })
   .on("mouseout", function(d){  
       d3.select(this).attr("fill", (d,i) => {       
