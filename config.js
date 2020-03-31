@@ -75,6 +75,15 @@ var colorScale = d3.scaleLinear()
                     .interpolate(d3.interpolateHcl);
 const svg = d3.select("svg");
 const g = svg.append('g');
+var tooltip = d3.select(".container")
+    .append("div")
+    .style("position", "absolute")  // asssigns a tooltip and sets display to hidden
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("background", "#ddd")
+    .text("a simple tooltip")
+    .attr("id", "tooltip")
+    .attr("data-year", "hello");
 g.selectAll('rect')
   .data(json.monthlyVariance)
   .enter()
@@ -97,7 +106,27 @@ g.selectAll('rect')
    // console.log(typeof d3.select(this).attr('data-temp'));
     //console.log("data temp" + (parseFloat(d3.select(this).attr('data-temp')) + 8.66));
     return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66));
-  });
+  })
+  .on("mouseover", function(d, i){
+    d3.select(this).attr( "fill", "red");
+    tooltip                                        
+           .style("left", d3.event.pageX - 50 + "px")
+           .style("top", d3.event.pageY - 125 + "px")
+           .style("visibility", "visible")
+           .style("display", "inline-block")
+           .style("background", "#b3d5e0")
+           .style("padding-left", "10px")
+           .style("padding-right", "10px")
+           .style("padding-bottom", "10px")
+           .style("padding-top", "10px")
+           .attr("data-year", d3.select(this).attr("data-year"))
+           .html("Year: " + d3.select(this).attr("data-year") + '<br />' + "Temp: " + (parseFloat(d3.select(this).attr('data-temp')) + 8.66)); 
+             })
+  .on("mouseout", function(d){  
+      d3.select(this).attr("fill", (d,i) => {       
+        return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66)); 
+              })                                                  
+              tooltip.style("display", "none");});;
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
   // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
