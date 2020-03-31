@@ -96,15 +96,12 @@ g.selectAll('rect')
   })
   .attr("width", xScale.bandwidth())
   .attr("height", yScale.bandwidth())
-
   .attr("class", "cell")
   .attr("data-month", (d, i) =>  d.month - 1)
   .attr("data-year", (d, i) => {
     return d.year})
   .attr('data-temp', (d, i) => parseFloat(d.variance))
   .attr("fill", function (d, i)  {
-   // console.log(typeof d3.select(this).attr('data-temp'));
-    //console.log("data temp" + (parseFloat(d3.select(this).attr('data-temp')) + 8.66));
     return colorScale((parseFloat(d3.select(this).attr('data-temp')) + 8.66));
   })
   .on("mouseover", function(d, i){
@@ -133,7 +130,7 @@ g.selectAll('rect')
               tooltip.style("display", "none");});;
 const xAxis = d3.axisBottom(xScale)
                 .tickValues(xScale.domain().filter(function(d,i){  
-  // only show every 12 tick or every 3rdyear since there are 4 x values for every year and was crowding x-axis
+  // only show every 10 tick or every 10th year
                     if(d % 10 == 0) {
                       return d;
                     }                                    
@@ -151,7 +148,7 @@ svg.append("g")
     .call(yAxis);
 let legend = svg.append("g").attr("id", "legend")
     .attr("height", 100)
-    .attr("width", 400)  // thi holds key to interpet colors for scatterplot
+    .attr("width", 400)  
     .attr('transform', 'translate(' + margin.left +',' + (h - 160) + ')')
     .attr("id", "legend");
 
@@ -178,7 +175,6 @@ legend.selectAll('rect')
 const legendXaxis = d3.axisBottom(legendXscale);
 legend.append("g")
     .attr("transform", "translate(0," + 40 + ")") // make x-axis
-    .attr("id", "x-axis")
     .call(legendXaxis);
 };
 $(document).ready(function() {  
